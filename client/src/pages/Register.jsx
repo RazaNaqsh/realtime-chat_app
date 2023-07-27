@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { NavLink } from "react-router-dom";
 import styled from "styled-components";
-
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import logo from "../assets/logo.svg";
 
 const Register = () => {
@@ -11,44 +12,64 @@ const Register = () => {
     password: "",
     confirmPassword: "",
   });
+
+  const handleValidation = () => {
+    const { password, confirmPassword } = values;
+
+    if (password != confirmPassword) {
+      toast.error("Passwords do not match.", {
+        position: "bottom-right",
+        autoClose: 8000,
+        pauseOnHover: true,
+        draggable: true,
+        theme: "dark",
+      });
+    }
+  };
   const handleSubmit = (e) => {
     e.preventDefault();
+    handleValidation();
   };
   const handleChange = (e) => {
     const { name, value } = e.target;
     setValues((prev) => ({ ...prev, [name]: value }));
   };
+
   return (
     <>
       <FormContainer>
         <form onSubmit={handleSubmit}>
           <div className="brand">
             <img src={logo} alt="" />
-            <h1>Scribe</h1>
+            <h1>Autumn Scribe</h1>
           </div>
           <input
             type="text"
             placeholder="Username"
             name="username"
             onChange={(e) => handleChange(e)}
+            required
           />
           <input
             type="email"
             placeholder="Email"
             name="email"
             onChange={(e) => handleChange(e)}
+            required
           />
           <input
             type="password"
             placeholder="Password"
             name="password"
             onChange={(e) => handleChange(e)}
+            required
           />
           <input
             type="password"
             placeholder="Confirm Password"
             name="confirmPassword"
             onChange={(e) => handleChange(e)}
+            required
           />
           <button type="submit">Create User</button>
           <span>
@@ -56,6 +77,7 @@ const Register = () => {
           </span>
         </form>
       </FormContainer>
+      <ToastContainer />
     </>
   );
 };
