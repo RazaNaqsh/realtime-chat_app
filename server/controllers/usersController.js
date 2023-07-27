@@ -20,7 +20,7 @@ const register = async (req, res, next) => {
 
     const user = await User.create({ username, email, password: hashPassword });
     delete user.password;
-    return res.status(201).json({ user });
+    return resjson({ user, status: true });
   } catch (ex) {
     next(ex);
   }
