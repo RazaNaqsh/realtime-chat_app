@@ -1,12 +1,14 @@
 import React, { useState } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import logo from "../assets/logo.svg";
 import { registerRoute } from "../utils/ApiRoutes";
+import axios from "axios";
 
 const Register = () => {
+  const navigate = useNavigate();
   const [values, setValues] = useState({
     username: "",
     email: "",
@@ -59,6 +61,13 @@ const Register = () => {
         email,
         password,
       });
+      if (data.status === false) {
+        toast.error(data.msg, toastOptions);
+      }
+      if (data.status === true) {
+        localStorage.setItem("app-user", JSON.stringify(data.user));
+      }
+      navigate("/");
     }
   };
   const handleChange = (e) => {
