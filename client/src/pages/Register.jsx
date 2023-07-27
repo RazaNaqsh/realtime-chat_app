@@ -1,20 +1,29 @@
-import React from "react";
+import React, { useState } from "react";
 import { NavLink } from "react-router-dom";
 import styled from "styled-components";
 
+import logo from "../assets/logo.svg";
+
 const Register = () => {
+  const [values, setValues] = useState({
+    username: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+  });
   const handleSubmit = (e) => {
     e.preventDefault();
   };
   const handleChange = (e) => {
-    e.preventDefault();
+    const { name, value } = e.target;
+    setValues((prev) => ({ ...prev, [name]: value }));
   };
   return (
     <>
       <FormContainer>
         <form onSubmit={handleSubmit}>
           <div className="brand">
-            <img src="" alt="" />
+            <img src={logo} alt="" />
             <h1>Scribe</h1>
           </div>
           <input
