@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { ToastContainer, toast } from "react-toastify";
@@ -23,6 +23,11 @@ const Register = () => {
     draggable: true,
     theme: "dark",
   };
+  useEffect(() => {
+    if (localStorage.getItem("app-user")) {
+      navigate("/");
+    }
+  }, []);
 
   const handleValidation = () => {
     const { password, confirmPassword, username, email } = values;
