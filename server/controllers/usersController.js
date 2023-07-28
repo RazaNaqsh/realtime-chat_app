@@ -26,18 +26,13 @@ const register = async (req, res, next) => {
 const login = async (req, res, next) => {
   try {
     const { username, password } = req.body;
-    const user = User.findOne({ username });
-    if (!user) {
-      return res.json({ msg: "Username does not exists", status: false });
-    }
-    const passCheck = bcrypt.compare(password, user.password);
-
-    if (!passCheck) {
-      return res.json({ msg: "Invalid Credentials", status: false });
-    }
-
+    const user = await User.findOne({ username });
+    if (!user)
+      return res.json({ msg: "Incorrect Username or Password", status: false });
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid)
+      return res.json({ msg: "Incorrect Username or Password", status: false });
     delete user.password;
-
     return res.json({ status: true, user });
   } catch (ex) {
     next(ex);

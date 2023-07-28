@@ -1,19 +1,15 @@
-import React, { useState } from "react";
-import { NavLink, useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import styled from "styled-components";
+import { useNavigate, Link } from "react-router-dom";
+import Logo from "../assets/logo.svg";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import logo from "../assets/logo.svg";
 import { loginRoute } from "../utils/ApiRoutes";
-import axios from "axios";
 
-const Login = () => {
+export default function Login() {
   const navigate = useNavigate();
-  const [values, setValues] = useState({
-    username: "",
-    password: "",
-  });
-
+  const [values, setValues] = useState({ username: "", password: "" });
   const toastOptions = {
     position: "bottom-right",
     autoClose: 8000,
@@ -22,29 +18,27 @@ const Login = () => {
     theme: "dark",
   };
 
-  const handleValidation = () => {
-    const { password, username } = values;
-    if (username.length < 3) {
-      toast.error(
-        "Username should be greater than 3 characters.",
-        toastOptions
-      );
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setValues((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const validateForm = () => {
+    const { username, password } = values;
+    if (username === "") {
+      toast.error("username and Password is required.", toastOptions);
       return false;
-    } else if (password.length < 8) {
-      toast.error(
-        "Password should be equal or greater than 8 characters.",
-        toastOptions
-      );
+    } else if (password === "") {
+      toast.error("username and Password is required.", toastOptions);
       return false;
     }
-
     return true;
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (handleValidation()) {
-      const { password, username } = values;
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    if (validateForm()) {
+      const { username, password } = values;
       const { data } = await axios.post(loginRoute, {
         username,
         password,
@@ -54,51 +48,43 @@ const Login = () => {
       }
       if (data.status === true) {
         localStorage.setItem("app-user", JSON.stringify(data.user));
+
+        navigate("/");
       }
-      navigate("/");
     }
-  };
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setValues((prev) => ({ ...prev, [name]: value }));
   };
 
   return (
     <>
       <FormContainer>
-        <form onSubmit={handleSubmit}>
+        <form action="" onSubmit={(event) => handleSubmit(event)}>
           <div className="brand">
-            <img src={logo} alt="" />
-            <h1>Autumn Scribe</h1>
+            <img src={Logo} alt="logo" />
+            <h1>snappy</h1>
           </div>
           <input
             type="text"
             placeholder="Username"
             name="username"
             onChange={(e) => handleChange(e)}
-            required
+            min="3"
           />
-
           <input
             type="password"
             placeholder="Password"
             name="password"
             onChange={(e) => handleChange(e)}
-            required
           />
-
-          <button type="submit">Login User</button>
+          <button type="submit">Log In</button>
           <span>
-            Dont have an account ? <NavLink to="/register">Sign Up.</NavLink>
+            Don't have an account ? <Link to="/register">Create One.</Link>
           </span>
         </form>
       </FormContainer>
       <ToastContainer />
     </>
   );
-};
-
-export default Login;
+}
 
 const FormContainer = styled.div`
   height: 100vh;
@@ -129,7 +115,7 @@ const FormContainer = styled.div`
     gap: 2rem;
     background-color: #00000076;
     border-radius: 2rem;
-    padding: 3rem 5rem;
+    padding: 5rem;
   }
   input {
     background-color: transparent;
