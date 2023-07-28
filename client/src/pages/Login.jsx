@@ -47,7 +47,6 @@ const Login = () => {
       const { password, username } = values;
       const { data } = await axios.post(loginRoute, {
         username,
-
         password,
       });
       if (data.status === false) {
