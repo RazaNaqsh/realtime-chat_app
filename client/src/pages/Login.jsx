@@ -18,6 +18,12 @@ export default function Login() {
     theme: "dark",
   };
 
+  useEffect(() => {
+    if (localStorage.getItem("app-user")) {
+      navigate("/");
+    }
+  }, []);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setValues((prev) => ({ ...prev, [name]: value }));
