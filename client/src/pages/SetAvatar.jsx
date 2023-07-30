@@ -22,8 +22,26 @@ const SetAvatar = () => {
     theme: "dark",
   };
 
-  const setProfilePicture = async () => {};
+  const setProfilePicture = async () => {
+    if (selectedAvatar === undefined) {
+      toast.error("Please select an avatar", toastOptions);
+    } else {
+      const user = await JSON.parse(localStorage.getItem("app-user"));
 
+      const { data } = await axios.post(`${setAvatarRoute}/${user._id}`, {
+        image: avatars[selectedAvatar],
+      });
+
+      if (data.isSet) {
+        user.isAvatarImageSet = true;
+        user.avatarImage = data.image;
+        localStorage.setItem("app-user", JSON.stringify(user));
+        navigate("/");
+      } else {
+        toast.error("Error setting avatar. Please try again.", toastOptions);
+      }
+    }
+  };
   useEffect(() => {
     const loadAvatar = async () => {
       const data = [];
@@ -42,13 +60,39 @@ const SetAvatar = () => {
 
   return (
     <>
-      <Container>
-        <div className="title-container">
-          <h1>Pick an Avatar for your pfp</h1>
-        </div>
-        <div className="avatars"></div>
-      </Container>
-      <ToastContainer />
+      {isLoading ? (
+        <Container>
+          <img src={loader} alt="loader" className="loader" />
+        </Container>
+      ) : (
+        <Container>
+          <div className="title-container">
+            <h1>Pick an Avatar as your profile picture</h1>
+          </div>
+          <div className="avatars">
+            {avatars.map((avatar, index) => {
+              return (
+                <div
+                  className={`avatar ${
+                    selectedAvatar === index ? "selected" : ""
+                  }`}
+                >
+                  <img
+                    src={`data:image/svg+xml;base64,${avatar}`}
+                    alt="avatar"
+                    key={avatar}
+                    onClick={() => setSelectedAvatar(index)}
+                  />
+                </div>
+              );
+            })}
+          </div>
+          <button onClick={setProfilePicture} className="submit-btn">
+            Set as Profile Picture
+          </button>
+          <ToastContainer />
+        </Container>
+      )}
     </>
   );
 };
