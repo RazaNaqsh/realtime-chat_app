@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
-// import ChatInput from "./ChatInput";
+import ChatInput from "./ChatInput";
 import Logout from "./Logout";
 import { v4 as uuidv4 } from "uuid";
 import axios from "axios";
@@ -101,6 +101,7 @@ export default function ChatContainer({ currentChat, socket }) {
         })} */}
       </div>
       {/* <ChatInput handleSendMsg={handleSendMsg} /> */}
+      <ChatInput />
     </Container>
   );
 }
