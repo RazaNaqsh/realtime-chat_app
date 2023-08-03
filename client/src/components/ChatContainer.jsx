@@ -11,16 +11,17 @@ export default function ChatContainer({ currentChat, socket }) {
   const scrollRef = useRef();
   const [arrivalMessage, setArrivalMessage] = useState(null);
 
-  // useEffect(async () => {
-  //   const data = await JSON.parse(
-  //     localStorage.getItem('app-user')
-  //   );
-  //   const response = await axios.post(recieveMessageRoute, {
-  //     from: data._id,
-  //     to: currentChat._id,
-  //   });
-  //   setMessages(response.data);
-  // }, [currentChat]);
+  useEffect(() => {
+    const setMsg = async () => {
+      const data = await JSON.parse(localStorage.getItem("app-user"));
+      const response = await axios.post(recieveMessageRoute, {
+        from: data._id,
+        to: currentChat._id,
+      });
+      setMessages(response.data);
+    };
+    setMsg();
+  }, [currentChat]);
 
   useEffect(() => {
     const getCurrentChat = async () => {
@@ -31,25 +32,18 @@ export default function ChatContainer({ currentChat, socket }) {
     getCurrentChat();
   }, [currentChat]);
 
-  // const handleSendMsg = async (msg) => {
-  //   const data = await JSON.parse(
-  //     localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY)
-  //   );
-  //   socket.current.emit("send-msg", {
-  //     to: currentChat._id,
-  //     from: data._id,
-  //     msg,
-  //   });
-  //   await axios.post(sendMessageRoute, {
-  //     from: data._id,
-  //     to: currentChat._id,
-  //     message: msg,
-  //   });
+  const handleSendMsg = async (msg) => {
+    const data = await JSON.parse(localStorage.getItem("app-user"));
+    await axios.post(sendMessageRoute, {
+      from: data._id,
+      to: currentChat._id,
+      message: msg,
+    });
 
-  //   const msgs = [...messages];
-  //   msgs.push({ fromSelf: true, message: msg });
-  //   setMessages(msgs);
-  // };
+    const msgs = [...messages];
+    msgs.push({ fromSelf: true, message: msg });
+    setMessages(msgs);
+  };
 
   // useEffect(() => {
   //   if (socket.current) {
@@ -84,7 +78,7 @@ export default function ChatContainer({ currentChat, socket }) {
         <Logout />
       </div>
       <div className="chat-messages">
-        {/* {messages.map((message) => {
+        {messages.map((message) => {
           return (
             <div ref={scrollRef} key={uuidv4()}>
               <div
@@ -98,10 +92,9 @@ export default function ChatContainer({ currentChat, socket }) {
               </div>
             </div>
           );
-        })} */}
+        })}
       </div>
-      {/* <ChatInput handleSendMsg={handleSendMsg} /> */}
-      <ChatInput />
+      <ChatInput handleSendMsg={handleSendMsg} />
     </Container>
   );
 }
